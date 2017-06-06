@@ -17,11 +17,8 @@ public class Player : MonoBehaviour
         myRigidBody = GetComponent<Rigidbody2D>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        
-
-
         myRigidBody.velocity = new Vector2(verticalSide * SpeedBoost, 0);
     }
 

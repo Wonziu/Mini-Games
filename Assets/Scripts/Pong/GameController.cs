@@ -11,6 +11,9 @@ public class GameController : MonoBehaviour
 
     public Ball myBall;
 
+    public Text TopScore;
+    public Text BottomScore;
+
     public Text TopTime;
     public Text BottomTime;
 
@@ -48,7 +51,7 @@ public class GameController : MonoBehaviour
 
     void SetupBoard()
     {
-        SetTextSize();
+        SetScoreTextSize();
         SetBorders();
         SetButtonsSize();
         SetCollidersSize();
@@ -68,10 +71,16 @@ public class GameController : MonoBehaviour
             controlButton.image.rectTransform.sizeDelta = new Vector2(screenWidth / 2 - 10, screenHeight / 2 - 10);
     }
 
-    void SetTextSize()
+    void SetScoreTextSize()
     {
-        TopTime.rectTransform.sizeDelta = new Vector2(0, screenHeight / 2);
-        BottomTime.rectTransform.sizeDelta = new Vector2(0, screenHeight / 2);
+        TopScore.rectTransform.position = new Vector2(screenWidth / 2, screenHeight / 2); // Changing pos, so it can be upside-down
+        TopTime.rectTransform.position = new Vector2(screenWidth / 2, screenHeight / 2 + 50); // No idea 
+
+        TopScore.rectTransform.sizeDelta = new Vector2(0, screenHeight / 2);
+        TopTime.rectTransform.sizeDelta = new Vector2(0, screenHeight / 2 - 50);
+
+        BottomScore.rectTransform.sizeDelta = new Vector2(0, screenHeight / 2);
+        BottomTime.rectTransform.sizeDelta = new Vector2(0, screenHeight / 2 - 50);
     }
 
     void SetCollidersSize()
@@ -85,7 +94,7 @@ public class GameController : MonoBehaviour
         myBall.ResetBall();
 
         for (int i = TimeToStart; i > 0; i--)
-        {          
+        {
             TopTime.text = i.ToString();
             BottomTime.text = i.ToString();
 
@@ -100,6 +109,19 @@ public class GameController : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D hit)
     {
+        if (hit.transform.position.y == 13)
+        {
+            var s = int.Parse(BottomScore.text);
+            s++;
+            BottomScore.text = s++.ToString();
+        }
+        else
+        {
+            var s = int.Parse(TopScore.text);
+            s++;
+            TopScore.text = s.ToString();
+        }
+
         StartCoroutine(StartGame());
     }
 
