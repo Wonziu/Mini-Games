@@ -7,28 +7,26 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-    public int TimeToStart;
+    public int TopPoints = 0;
+    public int BottomPoints = 0;
 
     public Ball myBall;
 
     public Text TopScore;
     public Text BottomScore;
 
-    public Text TopTime;
-    public Text BottomTime;
-
     public GameObject VerticalWall;
     public Button[] ControlButtons;
 
     private float screenWidth;
     private float screenHeight;
-
     private float screenAspect;
 
     public Text FPS;
 
     void Awake()
     {
+		Application.targetFrameRate = 60;
         screenWidth = Camera.main.pixelWidth;
         screenHeight = Camera.main.pixelHeight;
 
@@ -37,10 +35,10 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
-        float msec = Time.deltaTime * 1000.0f;
-        float fps = 1.0f / Time.deltaTime;
-        string text = string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps);
-        FPS.text = text;
+        //float msec = Time.deltaTime * 1000.0f;
+        //float fps = 1.0f / Time.deltaTime;
+        //string text = string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps);
+        //FPS.text = text;
     }
 
     void Start ()
@@ -73,14 +71,9 @@ public class GameController : MonoBehaviour
 
     void SetScoreTextSize()
     {
-        TopScore.rectTransform.position = new Vector2(screenWidth / 2, screenHeight / 2); // Changing pos, so it can be upside-down
-        TopTime.rectTransform.position = new Vector2(screenWidth / 2, screenHeight / 2 + 50); // No idea 
-
-        TopScore.rectTransform.sizeDelta = new Vector2(0, screenHeight / 2);
-        TopTime.rectTransform.sizeDelta = new Vector2(0, screenHeight / 2 - 50);
-
+        //TopScore.rectTransform.position = new Vector2(screenWidth / 2, screenHeight / 2); // Changing pos, so it can be upside-down
+        TopScore.transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, screenHeight / 2);
         BottomScore.rectTransform.sizeDelta = new Vector2(0, screenHeight / 2);
-        BottomTime.rectTransform.sizeDelta = new Vector2(0, screenHeight / 2 - 50);
     }
 
     void SetCollidersSize()
@@ -92,34 +85,23 @@ public class GameController : MonoBehaviour
     IEnumerator StartGame()
     {
         myBall.ResetBall();
-
-        for (int i = TimeToStart; i > 0; i--)
-        {
-            TopTime.text = i.ToString();
-            BottomTime.text = i.ToString();
-
-            yield return new WaitForSeconds(1);
-        }
-
-        TopTime.text = "";
-        BottomTime.text = "";
+        
+        yield return new WaitForSeconds(1);
 
         myBall.StartBall();
     }
 
     void OnCollisionEnter2D(Collision2D hit)
     {
-        if (hit.transform.position.y == 13)
+        if (hit.collider.transform.position.y > 0)
         {
-            var s = int.Parse(BottomScore.text);
-            s++;
-            BottomScore.text = s++.ToString();
+            BottomPoints += 1;
+            BottomScore.text = BottomPoints.ToString();
         }
         else
         {
-            var s = int.Parse(TopScore.text);
-            s++;
-            TopScore.text = s.ToString();
+            TopPoints += 1;
+            TopScore.text = TopPoints.ToString();
         }
 
         StartCoroutine(StartGame());

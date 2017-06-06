@@ -7,15 +7,21 @@ public class Ball : MonoBehaviour
     public float BallSpeed;
 
     private Rigidbody2D myRigidbody2D;
+    private AudioSource myAudioSource;
+    private TrailRenderer myTrailRenderer;
+
     private Vector2 lastVelocity;
 
     void Awake()
     {
         myRigidbody2D = GetComponent<Rigidbody2D>();
+        myAudioSource = GetComponent<AudioSource>();
+        myTrailRenderer = GetComponent<TrailRenderer>();
     }
 
     public void ResetBall()
     {
+        myTrailRenderer.Clear();
         myRigidbody2D.velocity = Vector2.zero;
         transform.position = Vector3.zero;
     }
@@ -45,5 +51,6 @@ public class Ball : MonoBehaviour
             myRigidbody2D.velocity = new Vector2(dist * BallSpeed / 1.5f, lastVelocity.y * -1);
             lastVelocity = myRigidbody2D.velocity;
         }
+        myAudioSource.Play();
     }
 }
