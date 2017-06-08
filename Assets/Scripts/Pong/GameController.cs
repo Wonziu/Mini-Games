@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -11,6 +12,8 @@ public class GameController : MonoBehaviour
     public int BottomPoints = 0;
 
     public Ball myBall;
+
+    public CanvasGroup Buttons;
 
     public Text TopScore;
     public Text BottomScore;
@@ -25,8 +28,10 @@ public class GameController : MonoBehaviour
     public Text FPS;
 
     void Awake()
-    {
-		Application.targetFrameRate = 60;
+    { 
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 60;
+
         screenWidth = Camera.main.pixelWidth;
         screenHeight = Camera.main.pixelHeight;
 
@@ -35,10 +40,10 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
-        //float msec = Time.deltaTime * 1000.0f;
-        //float fps = 1.0f / Time.deltaTime;
-        //string text = string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps);
-        //FPS.text = text;
+        float msec = Time.deltaTime * 1000.0f;
+        float fps = 1.0f / Time.deltaTime;
+        string text = string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps);
+        FPS.text = text;
     }
 
     void Start ()
@@ -54,7 +59,7 @@ public class GameController : MonoBehaviour
         SetButtonsSize();
         SetCollidersSize();
 
-        StartCoroutine(DisappearButtons());
+        Invoke("DisappearButtons", 5);
     }
 	
     void SetBorders()
@@ -107,13 +112,8 @@ public class GameController : MonoBehaviour
         StartCoroutine(StartGame());
     }
 
-    IEnumerator DisappearButtons()
+    void DisappearButtons()
     {
-        yield return new WaitForSeconds(3);
-
-        foreach (var controlButton in ControlButtons)
-        {
-            controlButton.image.color = Color.clear; 
-        }
+        Buttons.alpha = 0;
     }
 }
