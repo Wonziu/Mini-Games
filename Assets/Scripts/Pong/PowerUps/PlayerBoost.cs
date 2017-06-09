@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu]
-public class BallBoost : PowerUp
+public class PlayerBoost : PowerUp
 {
-    public int BallBoostSpeed;
+    public int PlayerBoostSpeed;
 
     public override void Execute(Ball b)
     {
-        b.BallBoostSpeed = BallBoostSpeed;
-        b.UpdateVelocity();       
+        b.LastPlayerHit.SpeedBoost += PlayerBoostSpeed;
     }
 }

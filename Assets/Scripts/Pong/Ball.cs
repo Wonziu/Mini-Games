@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
+    public Player LastPlayerHit; 
+
     public float BallSpeed;
     public float BallBoostSpeed;
     private float dist;
@@ -53,6 +55,7 @@ public class Ball : MonoBehaviour
         }
         else if (hit.collider.tag == "Player")
         {
+            LastPlayerHit = hit.gameObject.GetComponent<Player>();
             dist = transform.position.x - hit.transform.position.x;
 
             myRigidbody2D.velocity = new Vector2(dist * BallSpeed / 1.5f, lastVelocity.y * -1);

@@ -8,6 +8,7 @@ public class PowerUpHolder : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D coll)
     {
-        PowerUp.Execute(coll.attachedRigidbody.GetComponent<Ball>());
+        PowerUp.Execute(coll.GetComponent<Ball>());
+        gameObject.SetActive(false);
     }
 }

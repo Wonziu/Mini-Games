@@ -5,12 +5,12 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class GameController : MonoBehaviour
 {
     public List<PowerUp> PowerUps;
-
-    public GameObject PowerUp;
+    public PowerUpHolder PowerUpObject;
 
     public int TopPoints = 0;
     public int BottomPoints = 0;
@@ -123,7 +123,11 @@ public class GameController : MonoBehaviour
 
     void CreatePowerUp()
     {
-        var d = PowerUps[0];
-        PowerUp.GetComponent<PowerUpHolder>().PowerUp = d;
+        var d = PowerUps[Random.Range(0, PowerUps.Count)];
+
+        PowerUpObject.gameObject.SetActive(true);
+        PowerUpObject.GetComponent<SpriteRenderer>().sprite = d.PowerUpImage;
+        PowerUpObject.PowerUp = d;
+
     }
 }
