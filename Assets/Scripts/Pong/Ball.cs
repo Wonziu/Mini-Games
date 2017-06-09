@@ -5,6 +5,8 @@ using UnityEngine;
 public class Ball : MonoBehaviour
 {
     public float BallSpeed;
+    public float BallBoostSpeed;
+    private float dist;
 
     private Rigidbody2D myRigidbody2D;
     private AudioSource myAudioSource;
@@ -17,6 +19,11 @@ public class Ball : MonoBehaviour
         myRigidbody2D = GetComponent<Rigidbody2D>();
         myAudioSource = GetComponent<AudioSource>();
         myTrailRenderer = GetComponent<TrailRenderer>();
+    }
+
+    private void Update()
+    {
+        Debug.Log(myRigidbody2D.velocity);
     }
 
     public void ResetBall()
@@ -46,11 +53,18 @@ public class Ball : MonoBehaviour
         }
         else if (hit.collider.tag == "Player")
         {
-            float dist = transform.position.x - hit.transform.position.x;
+            dist = transform.position.x - hit.transform.position.x;
 
             myRigidbody2D.velocity = new Vector2(dist * BallSpeed / 1.5f, lastVelocity.y * -1);
             lastVelocity = myRigidbody2D.velocity;
         }
         myAudioSource.Play();
+    }
+
+    public void UpdateVelocity()
+    {
+        myRigidbody2D.velocity = new Vector2(lastVelocity.x * BallBoostSpeed, lastVelocity.y * BallBoostSpeed);
+
+        lastVelocity = myRigidbody2D.velocity;
     }
 }

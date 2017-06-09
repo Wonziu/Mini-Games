@@ -8,6 +8,10 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
+    public List<PowerUp> PowerUps;
+
+    public GameObject PowerUp;
+
     public int TopPoints = 0;
     public int BottomPoints = 0;
 
@@ -50,6 +54,7 @@ public class GameController : MonoBehaviour
 	{       
         SetupBoard();
         StartCoroutine(StartGame());   
+        CreatePowerUp();
     }
 
     void SetupBoard()
@@ -76,7 +81,6 @@ public class GameController : MonoBehaviour
 
     void SetScoreTextSize()
     {
-        //TopScore.rectTransform.position = new Vector2(screenWidth / 2, screenHeight / 2); // Changing pos, so it can be upside-down
         TopScore.transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, screenHeight / 2);
         BottomScore.rectTransform.sizeDelta = new Vector2(0, screenHeight / 2);
     }
@@ -115,5 +119,11 @@ public class GameController : MonoBehaviour
     void DisappearButtons()
     {
         Buttons.alpha = 0;
+    }
+
+    void CreatePowerUp()
+    {
+        var d = PowerUps[0];
+        PowerUp.GetComponent<PowerUpHolder>().PowerUp = d;
     }
 }
