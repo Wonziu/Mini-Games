@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 public class Player : MonoBehaviour
 {
@@ -10,7 +7,9 @@ public class Player : MonoBehaviour
     private bool isLeftButtonClicked;
     private bool isRightButtonClicked;
     private Rigidbody2D myRigidBody;
-    public int SpeedBoost;
+    public float PlayerSpeed;
+    public float PlayerBoostSpeed;
+
 
     void Awake()
     {
@@ -19,7 +18,7 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        myRigidBody.velocity = new Vector2(verticalSide * SpeedBoost, 0);
+        myRigidBody.velocity = new Vector2(verticalSide * PlayerSpeed * PlayerBoostSpeed, 0);
     }
 
     public void OnButtonDown(bool l) // for left side, it will be true, for right - false

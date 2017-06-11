@@ -1,14 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu]
 public class PlayerBoost : PowerUp
 {
-    public int PlayerBoostSpeed;
+    public float PlayerBoostSpeed;
 
     public override void Execute(Ball b)
     {
-        b.LastPlayerHit.SpeedBoost += PlayerBoostSpeed;
+        b.LastPlayerHit.PlayerBoostSpeed = PlayerBoostSpeed;
     }
 }

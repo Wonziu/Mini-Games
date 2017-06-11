@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu]
 public class BallBoost : PowerUp
 {
-    public int BallBoostSpeed;
+    public float BallBoostSpeed;
 
     public override void Execute(Ball b)
     {

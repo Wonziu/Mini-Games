@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -12,8 +9,9 @@ public class GameController : MonoBehaviour
     public List<PowerUp> PowerUps;
     public PowerUpHolder PowerUpObject;
 
-    public int TopPoints = 0;
-    public int BottomPoints = 0;
+    private int TopPoints = 0;
+    private int BottomPoints = 0;
+    public int TimeBetweenPowerUps;
 
     public Ball myBall;
 
@@ -25,6 +23,8 @@ public class GameController : MonoBehaviour
     public GameObject VerticalWall;
     public Button[] ControlButtons;
 
+    private float gameWidth;
+
     private float screenWidth;
     private float screenHeight;
     private float screenAspect;
@@ -32,30 +32,24 @@ public class GameController : MonoBehaviour
     public Text FPS;
 
     void Awake()
-    { 
+    {
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 60;
-
+   
         screenWidth = Camera.main.pixelWidth;
         screenHeight = Camera.main.pixelHeight;
 
         screenAspect = screenWidth / screenHeight;
-    }
 
-    void Update()
-    {
-        float msec = Time.deltaTime * 1000.0f;
-        float fps = 1.0f / Time.deltaTime;
-        string text = string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps);
-        FPS.text = text;
+        gameWidth = Camera.main.orthographicSize * screenAspect;
     }
 
     void Start ()
 	{       
         SetupBoard();
-        StartCoroutine(StartGame());   
-        CreatePowerUp();
-    }
+        StartCoroutine(StartGame());
+	    StartCoroutine(PowerUpsGenerator());
+	}
 
     void SetupBoard()
     {
@@ -69,8 +63,8 @@ public class GameController : MonoBehaviour
 	
     void SetBorders()
     {
-        Instantiate(VerticalWall, new Vector3(Camera.main.orthographicSize * screenAspect, 0, 0), Quaternion.identity);
-        Instantiate(VerticalWall, new Vector3(Camera.main.orthographicSize * -screenAspect, 0, 0), Quaternion.identity);
+        Instantiate(VerticalWall, new Vector3(gameWidth, 0, 0), Quaternion.identity);
+        Instantiate(VerticalWall, new Vector3(gameWidth * -1, 0, 0), Quaternion.identity);
     }
 
     void SetButtonsSize()
@@ -88,7 +82,7 @@ public class GameController : MonoBehaviour
     void SetCollidersSize()
     {
         foreach (BoxCollider2D col in GetComponents<BoxCollider2D>())
-            col.size = new Vector2(Camera.main.orthographicSize * screenAspect * 2, 1);
+            col.size = new Vector2(gameWidth * 2, 1);
     }
 
     IEnumerator StartGame()
@@ -121,13 +115,30 @@ public class GameController : MonoBehaviour
         Buttons.alpha = 0;
     }
 
-    void CreatePowerUp()
+    public void CreatePowerUp()
     {
-        var d = PowerUps[Random.Range(0, PowerUps.Count)];
+        var powerUp = PowerUps[Random.Range(0, PowerUps.Count)];
+        var x = Random.Range(gameWidth * -1, gameWidth) / 1.25f;
 
+        PowerUpObject.transform.position = new Vector3(x, 0, 0);
+
+        PowerUpObject.GetComponent<SpriteRenderer>().sprite = powerUp.PowerUpImage;
+        PowerUpObject.PowerUp = powerUp;
+
+        PowerUpObject.isPowerUpActive = true;
         PowerUpObject.gameObject.SetActive(true);
-        PowerUpObject.GetComponent<SpriteRenderer>().sprite = d.PowerUpImage;
-        PowerUpObject.PowerUp = d;
+    }
 
+    public IEnumerator PowerUpsGenerator()
+    {
+        yield return new WaitForSeconds(10);
+
+        while (true)
+        {
+            yield return new WaitForSeconds(TimeBetweenPowerUps);
+
+            if (!PowerUpObject.isPowerUpActive)
+                CreatePowerUp();
+        }
     }
 }
