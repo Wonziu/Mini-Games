@@ -6,12 +6,12 @@ using Random = UnityEngine.Random;
 
 public class GameController : MonoBehaviour
 {
+    public int PowerUpChance;
     public List<PowerUp> PowerUps;
     public PowerUpHolder PowerUpObject;
 
     private int TopPoints = 0;
     private int BottomPoints = 0;
-    public int TimeBetweenPowerUps;
 
     public Ball myBall;
 
@@ -48,7 +48,6 @@ public class GameController : MonoBehaviour
 	{       
         SetupBoard();
         StartCoroutine(StartGame());
-	    StartCoroutine(PowerUpsGenerator());
 	}
 
     void SetupBoard()
@@ -75,8 +74,8 @@ public class GameController : MonoBehaviour
 
     void SetScoreTextSize()
     {
-        TopScore.transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, screenHeight / 2);
-        BottomScore.rectTransform.sizeDelta = new Vector2(0, screenHeight / 2);
+        TopScore.transform.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, screenHeight / 2 - 50);
+        BottomScore.rectTransform.sizeDelta = new Vector2(0, screenHeight / 2 - 50);
     }
 
     void SetCollidersSize()
@@ -94,9 +93,9 @@ public class GameController : MonoBehaviour
         myBall.StartBall();
     }
 
-    void OnCollisionEnter2D(Collision2D hit)
+    void OnTriggerEnter2D(Collider2D coll)
     {
-        if (hit.collider.transform.position.y > 0)
+        if (coll.transform.position.y > 0)
         {
             BottomPoints += 1;
             BottomScore.text = BottomPoints.ToString();
@@ -117,10 +116,10 @@ public class GameController : MonoBehaviour
 
     public void CreatePowerUp()
     {
-        var powerUp = PowerUps[Random.Range(0, PowerUps.Count)];
-        var x = Random.Range(gameWidth * -1, gameWidth) / 1.25f;
+        var gameHeight = Camera.main.orthographicSize;
 
-        PowerUpObject.transform.position = new Vector3(x, 0, 0);
+        var powerUp = PowerUps[Random.Range(0, PowerUps.Count)];
+        PowerUpObject.transform.position = new Vector3(Random.Range(gameWidth * -1, gameWidth) / 1.25f, Random.Range(-1 * gameHeight, gameHeight) / 1.5f, 0);
 
         PowerUpObject.GetComponent<SpriteRenderer>().sprite = powerUp.PowerUpImage;
         PowerUpObject.PowerUp = powerUp;
@@ -129,14 +128,12 @@ public class GameController : MonoBehaviour
         PowerUpObject.gameObject.SetActive(true);
     }
 
-    public IEnumerator PowerUpsGenerator()
+    public void PowerUpsGenerator()
     {
-        yield return new WaitForSeconds(10);
+        var rand = Random.Range(0, 100);
 
-        while (true)
+        if (rand < PowerUpChance)
         {
-            yield return new WaitForSeconds(TimeBetweenPowerUps);
-
             if (!PowerUpObject.isPowerUpActive)
                 CreatePowerUp();
         }

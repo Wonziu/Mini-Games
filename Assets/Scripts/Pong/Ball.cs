@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
+    public GameController MyGameController;
+
     public Player LastPlayerHit;
 
     public float BallSpeed;
@@ -26,6 +28,7 @@ public class Ball : MonoBehaviour
     public void ResetBall()
     {
         myTrailRenderer.Clear();
+        BallBoostSpeed = 1;
         myRigidbody2D.velocity = Vector2.zero;
         transform.position = Vector3.zero;
     }
@@ -44,10 +47,7 @@ public class Ball : MonoBehaviour
     void OnCollisionEnter2D(Collision2D hit)
     {
         if (hit.collider.tag == "Wall")
-        {
-            myRigidbody2D.velocity = new Vector2(lastVelocity.x * -1, lastVelocity.y);
             lastVelocity = myRigidbody2D.velocity;
-        }
         else if (hit.collider.tag == "Player")
         {
             LastPlayerHit = hit.gameObject.GetComponent<Player>();
@@ -55,6 +55,7 @@ public class Ball : MonoBehaviour
 
             myRigidbody2D.velocity = new Vector2(dist * BallSpeed / 1.5f, lastVelocity.y * -1);
             lastVelocity = myRigidbody2D.velocity;
+            MyGameController.PowerUpsGenerator();
         }
 
         myAudioSource.Play();
