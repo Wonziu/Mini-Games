@@ -2,18 +2,21 @@
 
 public class Player : MonoBehaviour
 {
-    private int verticalSide;
+    public Player Enemy;
+    private Rigidbody2D myRigidBody;
+    public Vector2 PlayerScale;
+    public Shield MyShield;
 
+    private int verticalSide;
     private bool isLeftButtonClicked;
     private bool isRightButtonClicked;
-    private Rigidbody2D myRigidBody;
     public float PlayerSpeed;
     public float PlayerBoostSpeed;
-
 
     void Awake()
     {
         myRigidBody = GetComponent<Rigidbody2D>();
+        PlayerScale = transform.localScale;
     }
 
     void FixedUpdate()
@@ -45,5 +48,10 @@ public class Player : MonoBehaviour
 
         if (!isLeftButtonClicked)
             verticalSide = 0;
+    }
+
+    public void EnableShield()
+    {
+        MyShield.gameObject.SetActive(true);
     }
 }

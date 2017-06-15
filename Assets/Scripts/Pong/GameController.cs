@@ -7,6 +7,7 @@ using Random = UnityEngine.Random;
 public class GameController : MonoBehaviour
 {
     public int PowerUpChance;
+    public List<Shield> PlayerShields;
     public List<PowerUp> PowerUps;
     private List<Vector2> PowerUpsPositions;
     public PowerUpHolder PowerUpObject;
@@ -21,6 +22,7 @@ public class GameController : MonoBehaviour
     public Text TopScore;
     public Text BottomScore;
 
+    public Shield PlayerShield;
     public GameObject VerticalWall;
     public Button[] ControlButtons;
 
@@ -58,6 +60,8 @@ public class GameController : MonoBehaviour
         SetBorders();
         SetButtonsSize();
         SetCollidersSize();
+        SetShieldsSize();
+        
 
         Invoke("DisappearButtons", 5);
     }
@@ -88,6 +92,8 @@ public class GameController : MonoBehaviour
 
     void SetPowerUpsPositions()
     {
+        PowerUpsPositions = new List<Vector2>();
+
         for (int i = 1; i < 4; i++)
         {
             var p = new Vector2(gameWidth * 0.25f * i, 0);
@@ -148,6 +154,17 @@ public class GameController : MonoBehaviour
         {
             if (!PowerUpObject.isPowerUpActive)
                 CreatePowerUp();
+        }
+    }
+
+    public void SetShieldsSize()
+    {
+        foreach (var shield in PlayerShields)
+        {          
+            var scale = shield.transform.localScale;
+            scale.x = gameWidth * 2;
+
+            shield.transform.localScale = scale;
         }
     }
 }
