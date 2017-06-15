@@ -8,6 +8,7 @@ public class GameController : MonoBehaviour
 {
     public int PowerUpChance;
     public List<PowerUp> PowerUps;
+    private List<Vector2> PowerUpsPositions;
     public PowerUpHolder PowerUpObject;
 
     private int TopPoints = 0;
@@ -52,6 +53,7 @@ public class GameController : MonoBehaviour
 
     void SetupBoard()
     {
+        SetPowerUpsPositions();
         SetScoreTextSize();
         SetBorders();
         SetButtonsSize();
@@ -82,6 +84,18 @@ public class GameController : MonoBehaviour
     {
         foreach (BoxCollider2D col in GetComponents<BoxCollider2D>())
             col.size = new Vector2(gameWidth * 2, 1);
+    }
+
+    void SetPowerUpsPositions()
+    {
+        for (int i = 1; i < 4; i++)
+        {
+            var p = new Vector2(gameWidth * 0.25f * i, 0);
+            var p2 = new Vector2(-gameWidth * 0.25f * i, 0);
+            
+            PowerUpsPositions.Add(p);
+            PowerUpsPositions.Add(p2);
+        }
     }
 
     IEnumerator StartGame()
@@ -116,11 +130,9 @@ public class GameController : MonoBehaviour
 
     public void CreatePowerUp()
     {
-        var gameHeight = Camera.main.orthographicSize;
-
+        PowerUpObject.transform.position = PowerUpsPositions[Random.Range(0, PowerUpsPositions.Count)];
         var powerUp = PowerUps[Random.Range(0, PowerUps.Count)];
-        PowerUpObject.transform.position = new Vector3(Random.Range(gameWidth * -1, gameWidth) / 1.25f, Random.Range(-1 * gameHeight, gameHeight) / 1.5f, 0);
-
+       
         PowerUpObject.GetComponent<SpriteRenderer>().sprite = powerUp.PowerUpImage;
         PowerUpObject.PowerUp = powerUp;
 
