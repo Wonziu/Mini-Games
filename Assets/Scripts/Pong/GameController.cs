@@ -6,16 +6,18 @@ using Random = UnityEngine.Random;
 
 public class GameController : MonoBehaviour
 {
-    public int PowerUpChance;
+    public int PowerUpChance = 0;
     public List<Shield> PlayerShields;
     public List<PowerUp> PowerUps;
     private List<Vector2> PowerUpsPositions;
     public PowerUpHolder PowerUpObject;
 
-    private int TopPoints = 0;
-    private int BottomPoints = 0;
+    private int topPoints = 0;
+    private int bottomPoints = 0;
+    public int MaxPoints = 3;
 
     public Ball myBall;
+    public UIController MyUIController;
 
     public CanvasGroup Buttons;
 
@@ -50,8 +52,12 @@ public class GameController : MonoBehaviour
     void Start ()
 	{       
         SetupBoard();
-        StartCoroutine(StartGame());
 	}
+
+    public void StartGame()
+    {
+        StartCoroutine(IStartGame());
+    }
 
     void SetupBoard()
     {
@@ -62,8 +68,7 @@ public class GameController : MonoBehaviour
         SetCollidersSize();
         SetShieldsSize();
         
-
-        Invoke("DisappearButtons", 5);
+        Invoke("DisappearButtons", 3);
     }
 	
     void SetBorders()
@@ -104,7 +109,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    IEnumerator StartGame()
+    IEnumerator IStartGame()
     {
         myBall.ResetBall();
         
@@ -117,16 +122,17 @@ public class GameController : MonoBehaviour
     {
         if (coll.transform.position.y > 0)
         {
-            BottomPoints += 1;
-            BottomScore.text = BottomPoints.ToString();
+            bottomPoints += 1;
+            BottomScore.text = bottomPoints.ToString();
         }
         else
         {
-            TopPoints += 1;
-            TopScore.text = TopPoints.ToString();
+            topPoints += 1;
+            TopScore.text = topPoints.ToString();
         }
 
-        StartCoroutine(StartGame());
+        if (!CheckIfBottomWin())
+            StartCoroutine(IStartGame());
     }
 
     void DisappearButtons()
@@ -166,5 +172,20 @@ public class GameController : MonoBehaviour
 
             shield.transform.localScale = scale;
         }
+    }
+
+    bool CheckIfBottomWin()
+    {
+        if (bottomPoints == MaxPoints)
+        {
+            MyUIController.GameWin("Bottom Player");
+            return true;
+        }
+        if (topPoints == MaxPoints)
+        {
+            MyUIController.GameWin("Top Player");
+            return true;
+        }
+        return false;
     }
 }
