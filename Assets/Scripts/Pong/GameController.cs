@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -14,7 +15,7 @@ public class GameController : MonoBehaviour
 
     private int topPoints = 0;
     private int bottomPoints = 0;
-    public int MaxPoints = 3;
+    public int MaxPoints;
 
     public Ball myBall;
     public UIController MyUIController;
@@ -53,6 +54,12 @@ public class GameController : MonoBehaviour
 	{       
         SetupBoard();
 	}
+
+    public void ResetGame()
+    {
+        var s = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(s.name);
+    }
 
     public void StartGame()
     {
@@ -131,7 +138,7 @@ public class GameController : MonoBehaviour
             TopScore.text = topPoints.ToString();
         }
 
-        if (!CheckIfBottomWin())
+        if (!CheckIfWin())
             StartCoroutine(IStartGame());
     }
 
@@ -174,7 +181,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    bool CheckIfBottomWin()
+    bool CheckIfWin()
     {
         if (bottomPoints == MaxPoints)
         {

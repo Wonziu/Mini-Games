@@ -32,4 +32,14 @@ public class UIController : MonoBehaviour
         UIWin.SetActive(true);
         PlayerName.text = name + " Won!";
     }
+
+    public void ResetGame()
+    {
+        myGameController.ResetGame();
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
 }
